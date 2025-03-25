@@ -1,19 +1,17 @@
-// webpack.config.js
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require('webpack');
-const dotenv = require('dotenv');
-dotenv.config();
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: "./src/index.js",
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, "dist"),
     clean: true,
   },
-  devtool: "eval-source-map",
+  devtool: false,  // Disable source maps in production
   devServer: {
     watchFiles: ["./src/template.html"],
   },
@@ -21,10 +19,14 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/template.html",
     }),
-    new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-        'process.env.API_KEY': JSON.stringify(process.env.API_KEY || 'default-api-key'),
-      }),
+
+    // Load environment variables from .env file
+    new Dotenv(),
+
+    // Optionally, add DefinePlugin for other variables if needed
+    // new webpack.DefinePlugin({
+    //   'process.env.SOME_OTHER_VARIABLE': JSON.stringify(process.env.SOME_OTHER_VARIABLE),
+    // }),
   ],
   module: {
     rules: [
